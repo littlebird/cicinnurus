@@ -2,7 +2,9 @@
 
 Generating exotic nestings of svg
 
+<p align="center">
 ![CICINNURUS](https://github.com/littlebird/cicinnurus/blob/master/resources/public/img/cicinnurus.jpg)
+</p>
 
 ## Usage
 

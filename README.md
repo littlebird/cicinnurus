@@ -9,9 +9,9 @@ Generating exotic nestings of svg
 ```clj
 (require '[cicinnurus.core :as cicinnurus])
 (cicinnurus/generate-svg-circles [-400 400] [10 50] [400 400] 100)
+```
 
 ![CIRCLES](https://github.com/littlebird/cicinnurus/blob/master/resources/public/img/circles.svg)
-```
 
 ## License
 

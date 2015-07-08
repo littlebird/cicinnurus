@@ -11,7 +11,7 @@ Generating exotic nestings of svg
 (cicinnurus/generate-svg-circles [-400 400] [10 50] [400 400] 100)
 ```
 
-![CIRCLES](https://github.com/littlebird/cicinnurus/master/resources/public/img/circles.svg)
+![CIRCLES](https://rawgit.com/littlebird/cicinnurus/master/resources/public/img/circles.svg)
 
 ## License
 

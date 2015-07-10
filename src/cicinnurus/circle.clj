@@ -26,6 +26,10 @@
   (let [d (distance (:center a) (:center b))]
     (< (+ d 0.1) (+ (:radius a) (:radius b)))))
 
+(defn area->radius
+  [a]
+  (Math/sqrt (/ a Math/PI)))
+
 (defn sides->angle
   "gives the angle opposite side c"
   [a b c]

@@ -153,7 +153,13 @@
                 (recur anchor (inc here) (conj chain mirror) (rest tail) off sour))
               (recur anchor (inc here) (conj chain third) (rest tail) off sour))))))))
 
-(def twirl (comp step-tail biggest-head))
+(defn twirl
+  [circles]
+  (loop [iterations 0]
+    (let [layout (step-tail (biggest-head circles))]
+      (if (or (> iterations 10) (= (count circles) (count layout)))
+        layout
+        (recur (inc iterations))))))
 
 (defn generate-circle
   [center-range radius-range]

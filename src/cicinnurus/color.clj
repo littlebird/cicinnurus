@@ -63,7 +63,7 @@
 
 (defn color-range
   [[h-low h-high] [s-low s-high] [b-low b-high]]
-  (let [h-range (comp #(mod % TAU) (math/random-range h-low h-high))
+  (let [h-range (comp #(mod % math/TAU) (math/random-range h-low h-high))
         s-range (math/random-range s-low s-high)
         b-range (math/random-range b-low b-high)]
     (fn []

@@ -1,6 +1,7 @@
 (ns cicinnurus.force
   (:require
-   [cicinnurus.circle :as c]))
+   [cicinnurus.math :as math]
+   [cicinnurus.circle :as circle]))
 
 (def whirl-force -1.0)
 (def repel-force 1000)
@@ -10,16 +11,16 @@
   (update-in
    a [:force]
    (fn [force]
-     (c/add force (c/scale (c/normalize (:center a)) whirl-force)))))
+     (math/add force (math/scale (math/normalize (:center a)) whirl-force)))))
 
 (defn repel
   [a b]
   (update-in
    a [:force]
    (fn [force]
-     (let [d (c/distance (:center a) (:center b))
-           direction (c/normalize (c/subtract (:center a) (:center b)))]
-       (c/add force (c/scale direction (* repel-force (/ 1.0 (* d d)))))))))
+     (let [d (math/distance (:center a) (:center b))
+           direction (math/normalize (math/subtract (:center a) (:center b)))]
+       (math/add force (math/scale direction (* repel-force (/ 1.0 (* d d)))))))))
 
 (defn relate
   [a b]
@@ -28,12 +29,12 @@
 (defn apply-force
   [a]
   (-> a
-      (update-in [:center] (partial c/add (:force a)))
+      (update-in [:center] (partial math/add (:force a)))
       (assoc :force [0 0])))
 
 (defn mass-relate
   [circles]
-  (c/iterate-pairs relate circles))
+  (math/iterate-pairs relate circles))
 
 (defn iterate-mass
   [circles]

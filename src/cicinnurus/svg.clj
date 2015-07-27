@@ -1,10 +1,11 @@
 (ns cicinnurus.svg
   (:require
+   [cicinnurus.color :as color]
    [cicinnurus.circle :as circle]))
 
 (defn circle
   [[x y] r color]
-  [:circle {:cx x :cy y :r r :fill color}])
+  [:circle {:cx x :cy y :r r :fill (color/hsb->hex color)}])
 
 (defn group
   [things]
@@ -29,7 +30,7 @@
 
 (defn svg
   [mass width height]
-  [:svg {:version "1.0" :width width :height height} mass])
+  [:svg {:xmlns:svg "http://www.w3.org/2000/svg" :xmlns "http://www.w3.org/2000/svg" :xmlns:xlink "http://www.w3.org/1999/xlink" :version "1.0" :width width :height height} mass])
 
 (defn fit-in
   [svg fit]
@@ -50,7 +51,7 @@
 
 (defn generate-circle
   [center-range radius-range]
-  (circle [(center-range) (center-range)] (radius-range) (circle/random-color)))
+  (circle [(center-range) (center-range)] (radius-range) (color/random-color)))
 
 (defn generate-circles
   [center-range radius-range n]
@@ -90,3 +91,4 @@
   ([circles] (emit-circles circles [0 0]))
   ([circles translate]
     (emit (map circle->svg circles) translate)))
+

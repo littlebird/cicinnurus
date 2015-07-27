@@ -1,103 +1,20 @@
-(ns cicinnurus.circle)
-
-(defn distance
-  [a b]
-  (Math/sqrt (reduce + (map (fn [a b] (let [d (- a b)] (* d d))) a b))))
-
-(defn add
-  [a b]
-  (map + a b))
-
-(defn subtract
-  [a b]
-  (map - a b))
-
-(defn scale
-  [a x]
-  (map (partial * x) a))
-
-(defn normalize
-  [a]
-  (let [d (distance a (repeat 0))]
-    (scale a (/ 1.0 d))))
-
-(defn intersect?
-  [a b]
-  (let [d (distance (:center a) (:center b))]
-    (< (+ d 0.1) (+ (:radius a) (:radius b)))))
-
-(defn area->radius
-  [a]
-  (Math/sqrt (/ a Math/PI)))
-
-(defn sides->angle
-  "gives the angle opposite side c"
-  [a b c]
-  (let [num (+ (* a a) (* b b) (* c c -1))
-        den (* 2 a b)]
-    (Math/acos (/ num den))))
-
-(defn third-point-wrong-somehow
-  ([ab bc ac ax ay bx by] (third-point-wrong-somehow ab bc ac ax ay bx by -1))
-  ([ab bc ac ax ay bx by mirror]
-   (let [a-angle (sides->angle ab ac bc)
-         b-angle (* -1 mirror (sides->angle ab bc ac))
-         tan-a (Math/tan a-angle)
-         tan-b (Math/tan b-angle)
-         offset (- ay (* tan-a ax))
-         cx (/
-             (+ (* tan-a ax) (* -1 tan-b bx) by (* -1 ay))
-             (- tan-a tan-b))
-         cy (+ (* tan-a cx) offset)]
-     [cx cy])))
-
-(defn third-point
-  ([ab bc ac ax ay bx by] (third-point ab bc ac ax ay bx by -1))
-  ([ab bc ac ax ay bx by mirror]
-   (let [[cx cy] (normalize (subtract [ax ay] [bx by]))
-         b-angle (* -1 mirror (sides->angle ab bc ac))
-         dx (- (* cx (Math/cos b-angle)) (* cy (Math/sin b-angle)))
-         dy (+ (* cx (Math/sin b-angle)) (* cy (Math/cos b-angle)))]
-     (add [bx by] (scale [dx dy] bc)))))
-
-(defn all-pairs
-  [f coll]
-  (loop [[x & xs] coll
-         result []]
-    (if (nil? xs)
-      result
-      (recur xs (concat result (map (partial vector x) xs))))))
-
-(defn iterate-pairs
-  [f coll]
-  (loop [[x & xs] coll
-         result []]
-    (if (nil? xs)
-      (conj result x)
-      (let [[x ys] (reduce
-                    (fn [[x ys] y]
-                      (let [[xn yn] (f x y)]
-                        [xn (conj ys yn)]))
-                    [x []] xs)]
-        (recur ys (conj result x))))))
-
-(defn random-range
-  [low high]
-  (let [width (- high low)]
-    (fn []
-      (+ low (* (rand) width)))))
-
-(defn random-color
-  []
-  (str "#" (format "%06x" (rand-int 16rFFFFFF))))
+(ns cicinnurus.circle
+  (:require
+   [cicinnurus.math :as math]
+   [cicinnurus.color :as color]))
 
 (defn circle
   [center radius color]
   {:center center :radius radius :force [0 0] :color color})
 
+(defn intersect?
+  [a b]
+  (let [d (math/distance (:center a) (:center b))]
+    (< (+ d 0.1) (+ (:radius a) (:radius b)))))
+
 (defn distances
   [{a-center :center a-radius :radius} {b-center :center b-radius :radius} {c-radius :radius}]
-  [(distance a-center b-center)
+  [(math/distance a-center b-center)
    (+ b-radius c-radius)
    (+ a-radius c-radius)])
 
@@ -107,7 +24,7 @@
    (let [[ab bc ac] (distances a b c)
          [ax ay] (:center a)
          [bx by] (:center b)
-         point (third-point ab bc ac ax ay bx by mirror)]
+         point (math/third-point ab bc ac ax ay bx by mirror)]
      (assoc c :center point))))
 
 (defn biggest-head
@@ -128,7 +45,7 @@
         neck (second circles)
         tail (drop 2 circles)
         down (+ (:radius head) (:radius neck))
-        fall (add (:center head) [0 down])
+        fall (math/add (:center head) [0 down])
         neck (assoc neck :center fall)]
     (loop [anchor 0
            here 1
@@ -166,11 +83,11 @@
         (recur (inc iterations))))))
 
 (defn generate-circle
-  [center-range radius-range]
-  (circle [(center-range) (center-range)] (radius-range) (random-color)))
+  ([center-range radius-range] (generate-circle center-range radius-range color/random-color))
+  ([center-range radius-range random-color]
+   (circle (center-range) (radius-range) (random-color))))
 
 (defn generate-circles
-  [center-range radius-range n]
+  [center-range radius-range random-color n]
   (for [_ (range n)]
-    (generate-circle center-range radius-range)))
-
+    (generate-circle center-range radius-range random-color)))

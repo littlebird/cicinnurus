@@ -30,7 +30,14 @@
 
 (defn svg
   [mass width height]
-  [:svg {:xmlns:svg "http://www.w3.org/2000/svg" :xmlns "http://www.w3.org/2000/svg" :xmlns:xlink "http://www.w3.org/1999/xlink" :version "1.0" :width width :height height} mass])
+  [:svg
+   {:xmlns "http://www.w3.org/2000/svg"
+    :xmlns:svg "http://www.w3.org/2000/svg"
+    :xmlns:xlink "http://www.w3.org/1999/xlink"
+    :version "1.0"
+    :width width
+    :height height}
+   mass])
 
 (defn fit-in
   [svg fit]

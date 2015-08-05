@@ -106,14 +106,6 @@
     (fn []
       (+ low (* (Math/pow (rand) power) width)))))
 
-(defn border-range
-  [low high power]
-  (let [width (- high low)]
-    (fn []
-      (let [sign (if (<= (rand) 0.5) -0.5 0.5)
-            border (+ 0.5 (* sign (Math/pow (rand) power)))]
-        (+ low (* border width))))))
-
 (defn random-point
   [[x-low x-high] [y-low y-high] power]
   (let [width (- x-high x-low)
@@ -124,4 +116,12 @@
             point (rotate [magnitude 0.0] angle)
             [x y] (add (scale point 0.5) [0.5 0.5])]
         [(+ (* x width) x-low) (+ (* y height) y-low)]))))
+
+(defn border-range
+  [low high power]
+  (let [width (- high low)]
+    (fn []
+      (let [sign (if (<= (rand) 0.5) -0.5 0.5)
+            border (+ 0.5 (* sign (Math/pow (rand) power)))]
+        (+ low (* border width))))))
 

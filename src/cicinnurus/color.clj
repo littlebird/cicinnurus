@@ -5,7 +5,7 @@
 
 (defn hex->rgb
   [hex]
-  (let [[_ match] (re-find #"#?([0-9a-f]+)" hex)
+  (let [[_ match] (re-find #"#?([0-9a-fA-F]+)" hex)
         parts (map string/join (partition 2 match))]
     (mapv #(Integer/parseInt % 16) parts)))
 
@@ -52,6 +52,10 @@
 
 (def hex->hsb (comp rgb->hsb hex->rgb))
 (def hsb->hex (comp rgb->hex hsb->rgb))
+
+(defn rotate-hue
+  [color angle]
+  (update-in color [0] #(mod (+ % angle) math/TAU)))
 
 (defn random-color
   []

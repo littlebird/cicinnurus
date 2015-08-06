@@ -1,4 +1,4 @@
-(defproject aviary/cicinnurus "0.0.3"
+(defproject aviary/cicinnurus "0.0.5"
   :description "Generate exotic nestings of svg"
   :url "http://github.com/littlebird/cicinnurus"
   :license {:name "Eclipse Public License"

@@ -7,6 +7,16 @@
   [[x y] r color]
   [:circle {:cx x :cy y :r r :fill (color/hsb->hex color)}])
 
+(defn text
+  [content [x y] font size color]
+  [:text
+   {:x x :y y
+    :fill (color/hsb->hex color)
+    :font-size size :font-family font
+    :text-anchor "middle"
+    :dominant-baseline "middle"}
+   content])
+
 (defn group
   [things]
   (into [:g {}] things))
@@ -53,8 +63,10 @@
         (assoc-in [1 :height] fit))))
 
 (defn circle->svg
-  [{:keys [center radius color]}]
-  (circle center radius color))
+  [{:keys [center radius color] :as attributes}]
+  (if radius
+    (circle center radius color)
+    attributes))
 
 (defn generate-circle
   [center-range radius-range]
@@ -72,7 +84,7 @@
    (map
     (fn [circle]
       (extend (-> circle :center axis) (:radius circle)))
-    mass)))
+    (filter :radius mass))))
 
 (defn position-mass
   ([mass] (position-mass mass nil))
@@ -98,4 +110,3 @@
   ([circles] (emit-circles circles [0 0]))
   ([circles translate]
     (emit (map circle->svg circles) translate)))
-

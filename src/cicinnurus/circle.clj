@@ -40,39 +40,41 @@
 
 (defn step-tail
   [circles]
-  (let [head (first circles)
-        head (assoc head :center [0 0])
-        neck (second circles)
-        tail (drop 2 circles)
-        down (+ (:radius head) (:radius neck))
-        fall (math/add (:center head) [0 down])
-        neck (assoc neck :center fall)]
-    (loop [anchor 0
-           here 1
-           chain [head neck]
-           tail tail
-           off []
-           sour 0]
-      (if (empty? tail)
-        (if (or (empty? off) (= sour (count off)))
-          chain
-          (recur anchor here chain off [] (count off)))
-        (if (= anchor here)
-          (recur 0 (dec (count chain)) chain (rest tail) (conj off (first tail)) sour)
-          (let [toward (first tail)
-                head (nth chain anchor)
-                neck (nth chain here)
-                third (third-center head neck toward)
-                mirror (third-center head neck toward -1)]
-            (if (or (nan-center? third) (some (partial intersect? third) chain))
-              (if (or (nan-center? mirror) (some (partial intersect? mirror) chain))
-                (let [shift (inc anchor)
-                      length (count chain)]
-                  (if (>= shift length)
-                    (recur 0 (dec length) chain (rest tail) (conj off toward) sour)
-                    (recur shift here chain tail off sour)))
-                (recur anchor (inc here) (conj chain mirror) (rest tail) off sour))
-              (recur anchor (inc here) (conj chain third) (rest tail) off sour))))))))
+  (if (< (count circles) 2)
+    circles
+    (let [head (first circles)
+          head (assoc head :center [0 0])
+          neck (second circles)
+          tail (drop 2 circles)
+          down (+ (:radius head) (:radius neck))
+          fall (math/add (:center head) [0 down])
+          neck (assoc neck :center fall)]
+      (loop [anchor 0
+             here 1
+             chain [head neck]
+             tail tail
+             off []
+             sour 0]
+        (if (empty? tail)
+          (if (or (empty? off) (= sour (count off)))
+            chain
+            (recur anchor here chain off [] (count off)))
+          (if (= anchor here)
+            (recur 0 (dec (count chain)) chain (rest tail) (conj off (first tail)) sour)
+            (let [toward (first tail)
+                  head (nth chain anchor)
+                  neck (nth chain here)
+                  third (third-center head neck toward)
+                  mirror (third-center head neck toward -1)]
+              (if (or (nan-center? third) (some (partial intersect? third) chain))
+                (if (or (nan-center? mirror) (some (partial intersect? mirror) chain))
+                  (let [shift (inc anchor)
+                        length (count chain)]
+                    (if (>= shift length)
+                      (recur 0 (dec length) chain (rest tail) (conj off toward) sour)
+                      (recur shift here chain tail off sour)))
+                  (recur anchor (inc here) (conj chain mirror) (rest tail) off sour))
+                (recur anchor (inc here) (conj chain third) (rest tail) off sour)))))))))
 
 (defn twirl
   [circles]

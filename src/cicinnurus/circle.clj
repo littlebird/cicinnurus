@@ -29,10 +29,12 @@
 
 (defn biggest-head
   [circles]
-  (let [decreasing (sort-by :radius > circles)
-        head (first decreasing)
-        tail (rest decreasing)]
-    (cons head (shuffle tail))))
+  (if (empty? circles)
+    circles
+    (let [decreasing (sort-by :radius > circles)
+          head (first decreasing)
+          tail (rest decreasing)]
+      (cons head (shuffle tail)))))
 
 (defn nan-center?
   [circle]

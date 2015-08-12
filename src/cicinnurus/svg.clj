@@ -89,18 +89,20 @@
 (defn position-mass
   ([mass] (position-mass mass nil))
   ([mass fit]
-   (let [min-x (find-extreme mass first - min)
-         max-x (find-extreme mass first + max)
-         min-y (find-extreme mass last - min)
-         max-y (find-extreme mass last + max)
-         width (Math/ceil (- max-x min-x))
-         height (Math/ceil (- max-y min-y))
-         circles (map circle->svg mass)
-         group (translate (group circles) (map #(Math/ceil (* -1 %)) [min-x min-y]))
-         svg (svg group width height)]
-     (if fit
-       (fit-in svg fit)
-       svg))))
+   (if (empty? mass)
+     (svg mass 1 1)
+     (let [min-x (find-extreme mass first - min)
+           max-x (find-extreme mass first + max)
+           min-y (find-extreme mass last - min)
+           max-y (find-extreme mass last + max)
+           width (Math/ceil (- max-x min-x))
+           height (Math/ceil (- max-y min-y))
+           circles (map circle->svg mass)
+           group (translate (group circles) (map #(Math/ceil (* -1 %)) [min-x min-y]))
+           svg (svg group width height)]
+       (if fit
+         (fit-in svg fit)
+         svg)))))
 
 (defn emit
   [mass to]

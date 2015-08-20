@@ -4,18 +4,26 @@
    [cicinnurus.circle :as circle]))
 
 (defn circle
-  [[x y] r color]
-  [:circle {:cx x :cy y :r r :fill (color/hsb->hex color)}])
+  ([[x y] r color] (circle [x y] r color {}))
+  ([[x y] r color render]
+   [:circle
+    (merge
+     {:cx x :cy y :r r
+      :fill (color/hsb->hex color)}
+     render)]))
 
 (defn text
-  [content [x y] font size color]
-  [:text
-   {:x x :y y
-    :fill (color/hsb->hex color)
-    :font-size size :font-family font
-    :text-anchor "middle"
-    :dominant-baseline "middle"}
-   content])
+  ([content [x y] font size color] (text [x y] font size color {}))
+  ([content [x y] font size color render]
+   [:text
+    (merge
+     {:x x :y y
+      :fill (color/hsb->hex color)
+      :font-size size :font-family font
+      :text-anchor "middle"
+      :dominant-baseline "middle"}
+     render)
+    content]))
 
 (defn group
   [things]
@@ -66,9 +74,9 @@
         (assoc-in [1 :height] fit))))
 
 (defn circle->svg
-  [{:keys [center radius color] :as attributes}]
+  [{:keys [center radius color render] :as attributes}]
   (if radius
-    (circle center radius color)
+    (circle center radius color render)
     attributes))
 
 (defn generate-circle

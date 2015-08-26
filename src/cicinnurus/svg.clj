@@ -33,6 +33,19 @@
   [transform x y]
   (str (name transform) "(" x "," y ")"))
 
+(defn px [trans] (if (= trans :translate) "px"))
+
+(defn transform-style
+  [trans el [x y]]
+  (let [transform (name trans)
+        applied (str transform "X(" x (px trans) ") " transform "Y(" y (px trans) ")")]
+    (update-in
+     el [1 :style :transform]
+     (fn [existing]
+       (if existing
+         (str existing " " applied)
+         applied)))))
+
 (defn transform
   [trans el [x y]]
   (let [s (transform-str trans x y)]
@@ -40,11 +53,11 @@
      el [1 :transform]
      (fn [transform]
        (if transform
-         (str s " " transform)
+         (str transform " " s)
          s)))))
 
-(def translate (partial transform :translate))
-(def scale (partial transform :scale))
+(def translate (partial transform-style :translate))
+(def scale (partial transform-style :scale))
 
 (defn svg
   [mass width height]
@@ -65,9 +78,7 @@
   (let [width (get-in svg [1 :width])
         height (get-in svg [1 :height])
         extreme (max width height)
-        ratio (/ fit extreme)
-        fit-width (* width ratio)
-        fit-height (* height ratio)]
+        ratio (/ fit extreme)]
     (-> svg
         (update-in [2] scale [ratio ratio])
         (assoc-in [1 :width] fit)
@@ -109,10 +120,15 @@
            width (Math/ceil (- max-x min-x))
            height (Math/ceil (- max-y min-y))
            circles (map circle->svg mass)
-           group (translate (group circles) (map #(Math/ceil (* -1 %)) [min-x min-y]))
+           extreme (max width height)
+           ratio (/ (if fit fit 1.0) extreme)
+           group (translate (group circles) (map #(Math/ceil (* -1 ratio %)) [min-x min-y]))
            svg (svg group width height)]
        (if fit
-         (fit-in svg fit)
+         (-> svg
+             (update-in [2] scale [ratio ratio])
+             (assoc-in [1 :width] fit)
+             (assoc-in [1 :height] fit))
          svg)))))
 
 (defn emit

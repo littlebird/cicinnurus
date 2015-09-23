@@ -109,8 +109,8 @@
     (filter :radius mass))))
 
 (defn position-mass
-  ([mass] (position-mass mass nil))
-  ([mass fit]
+  ([mass] (position-mass mass [1.0 1.0]))
+  ([mass [fit-width fit-height]]
    (if (empty? mass)
      (svg mass 1 1)
      (let [min-x (find-extreme mass first - min)
@@ -121,15 +121,15 @@
            height (Math/ceil (- max-y min-y))
            circles (map circle->svg mass)
            extreme (max width height)
-           ratio (/ (if fit fit 1.0) extreme)
-           group (translate (group circles) (map #(Math/ceil (* -1 ratio %)) [min-x min-y]))
-           svg (svg group width height)]
-       (if fit
-         (-> svg
-             (update-in [2] scale [ratio ratio])
-             (assoc-in [1 :width] fit)
-             (assoc-in [1 :height] fit))
-         svg)))))
+           width-ratio (/ fit-width extreme)
+           height-ratio (/ fit-height extreme)
+           ratio (min width-ratio height-ratio)
+           group (translate
+                  (group circles)
+                  [(Math/ceil (* 0.5 fit-width))
+                   (Math/ceil (* -1 height-ratio min-y))])
+           svg (svg group fit-width fit-height)]
+       (update-in svg [2] scale [ratio ratio])))))
 
 (defn emit
   [mass to]

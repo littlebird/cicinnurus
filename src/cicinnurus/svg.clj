@@ -56,8 +56,19 @@
          (str transform " " s)
          s)))))
 
-(def translate (partial transform-style :translate))
-(def scale (partial transform-style :scale))
+(defn translate
+  [el to]
+  (transform
+   :translate
+   (transform-style :translate el to)
+   to))
+
+(defn scale
+  [el to]
+  (transform
+   :scale
+   (transform-style :scale el to)
+   to))
 
 (defn svg
   [mass width height]
@@ -115,8 +126,10 @@
      (svg mass 1 1)
      (let [min-x (find-extreme mass first - min)
            max-x (find-extreme mass first + max)
+           center-x (* 0.5 (+ min-x max-x))
            min-y (find-extreme mass last - min)
            max-y (find-extreme mass last + max)
+           center-y (* 0.5 (+ min-y max-y))
            width (Math/ceil (- max-x min-x))
            height (Math/ceil (- max-y min-y))
            circles (map circle->svg mass)
@@ -126,8 +139,8 @@
            ratio (min width-ratio height-ratio)
            group (translate
                   (group circles)
-                  [(Math/ceil (* 0.5 fit-width))
-                   (Math/ceil (* -1 height-ratio min-y))])
+                  [(Math/ceil (+ (* -1 width-ratio center-x) (* 0.5 fit-width)))
+                   (Math/ceil (+ (* -1 height-ratio center-y) (* 0.5 fit-height)))])
            svg (svg group fit-width fit-height)]
        (update-in svg [2] scale [ratio ratio])))))
 

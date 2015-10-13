@@ -49,7 +49,7 @@
           neck (second circles)
           tail (drop 2 circles)
           down (+ (:radius head) (:radius neck))
-          fall (math/add (:center head) [0 down])
+          fall (math/add (:center head) (math/rotate [0 down] (* math/TAU (rand))))
           neck (assoc neck :center fall)]
       (loop [anchor 0
              here 1

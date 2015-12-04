@@ -6,8 +6,6 @@ Generating exotic nestings of svg
 <img src="https://github.com/littlebird/cicinnurus/blob/master/resources/public/img/cicinnurus.jpg">
 </p>
 
-## Usage
-
 Cicinnurus was originally intended as a circle packing library, but grew to encompass color, math and svg functionality as well.  
 
 To add Cicinnurus to your project.clj:
@@ -24,6 +22,8 @@ A quick demo:
 ```
 
 ![CIRCLES](https://rawgit.com/littlebird/cicinnurus/master/resources/public/img/circles.svg)
+
+## Usage
 
 There are four components to the Cicinnurus library: Circle, Color, Math, and SVG.
 

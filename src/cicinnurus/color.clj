@@ -22,12 +22,12 @@
         saturation (if (zero? brightness) 0.0 (/ delta brightness))
         hue (if (zero? delta)
               0.0
-              (* Math/PI
-                 (/ (cond
-                      (= r brightness) (- g b)
-                      (= g brightness) (+ (- b r) 2)
-                      :else (+ (- r g) 4))
-                    (* 3 delta))))]
+              (let [[rc gc bc] (map #(/ (- brightness %) delta) [r g b])]
+                (* (/ math/TAU 6) 
+                   (cond
+                     (= r brightness) (- bc gc)
+                     (= g brightness) (+ 2 (- rc bc))
+                     :else (+ 4 (- gc rc))))))]
     [(mod hue math/TAU)
      saturation
      brightness]))

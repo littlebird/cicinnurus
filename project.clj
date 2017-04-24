@@ -1,9 +1,9 @@
-(defproject littlebird/cicinnurus "0.0.14"
+(defproject littlebird/cicinnurus "0.0.15"
   :description "Generate exotic nestings of svg"
   :url "http://github.com/littlebird/cicinnurus"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[org.clojure/clojure "1.7.0"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]]
   :plugins [[s3-wagon-private "1.1.2"]]
   :repositories ^:replace
   [["central" {:url "http://repo1.maven.org/maven2"}]

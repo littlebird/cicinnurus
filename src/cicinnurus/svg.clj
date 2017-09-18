@@ -21,7 +21,7 @@
       :fill (color/hsb->hex color)
       :font-size size :font-family font
       :text-anchor "middle"
-      :dominant-baseline "middle"}
+      :dominant-baseline "auto"}
      render)
     content]))
 
@@ -74,10 +74,7 @@
   [mass width height]
   (let [outer
         [:svg
-         {:xmlns "http://www.w3.org/2000/svg"
-          :xmlns:svg "http://www.w3.org/2000/svg"
-          :xmlns:xlink "http://www.w3.org/1999/xlink"
-          :version "1.0"
+         {:version "1.0"
           :width width
           :height height}]]
     (if (empty? mass)
